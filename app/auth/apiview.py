@@ -1,0 +1,95 @@
+from flask import jsonify, request
+from app import db, bcrypt
+from app.models import User
+
+
+def user_create(data):
+    user = User.query.filter_by(email=data.get('email')).first()
+    if not user:
+        try:
+            user = User(email=data['email'], password=data['password'],
+                        first_name_user=data['first_name_user'], last_name_user=data['last_name_user'],
+                        salary_user=data['salary_user'], department_id=data['department_id'],
+                        role_id=data['role_id'])
+            db.session.add(user)
+            db.session.commit()
+            auth_token = user.encode_auth_token(user.id)
+            return jsonify({"auth_token": auth_token}), 201
+        except Exception as e:
+            print(e)
+            return jsonify({"message": "invalid data"}), 400
+    else:
+        return jsonify({"message": "User is already exist"}), 401
+
+
+def user_read():
+    users = User.query.all()
+    results = [
+        {
+            "id": user.id,
+            "email": user.email,
+            "first_name_user": user.first_name_user,
+            "last_name_user": user.last_name_user,
+            "salary_user": user.salary_user,
+            "created_at": user.created_at,
+            "role_id": user.role_id
+        } for user in users
+    ]
+    return results
+
+
+def user_read_by_pk(pk):
+    user = User.query.get_or_404(pk)
+    results = [
+        {
+            "id": user.id,
+            "email": user.email,
+            "first_name_user": user.first_name_user,
+            "last_name_user": user.last_name_user,
+            "salary_user": user.salary_user,
+            "created_at": user.created_at,
+            "role_id": user.role_id
+        }
+    ]
+    return results
+
+
+def user_update_by_pk(pk):
+    user = User.query.get_or_404(pk)
+    data = request.get_json()
+    user.email = data['email']
+    user.first_name_user = data['first_name_user']
+    user.last_name_user = data['last_name_user']
+    user.department_id = data['department_id']
+    user.role_id = data['role_id']
+    user.salary_user = data['salary_user']
+    try:
+        db.session.add(user)
+        db.session.commit()
+    except Exception as e:
+        print(e)
+        return e
+
+
+def user_delete_by_pk(pk):
+    user = User.query.get_or_404(pk)
+    db.session.delete(user)
+    db.session.commit()
+
+
+# def user_login(data):
+#     try:
+#         user = User.query.filter_by(email=data.get('email')).first()
+#         if user and bcrypt.check_password_hash(
+#                 user.password, data.get('password')):
+#             # session['email'] = auth.email
+#             auth_token = user.encode_auth_token(user.id)
+#             if auth_token:
+#                 return jsonify({"auth_token": auth_token}), 200
+#             else:
+#                 return jsonify({'message': 'auth_token not created'}), 400
+#         else:
+#             return jsonify({'message': 'user does not exist'}), 400
+#     except Exception as e:
+#         print(e)
+#         return jsonify({'message': 'invalid data'}), 500
