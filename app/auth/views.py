@@ -1,12 +1,14 @@
 from flask import abort, Blueprint
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from .apiview import *
-from ..permissions import head_company_required
+from .. import bcrypt
+from ..permissions import head_company_or_office_required
 
 auth_blueprint = Blueprint('auth', __name__)
 
 
 @auth_blueprint.route('/create/', methods=['POST'])
-@head_company_required()
+@head_company_or_office_required()
 def create():
     if request.method == 'POST':
         if request.is_json:
@@ -19,7 +21,7 @@ def create():
 
 
 @auth_blueprint.route('/read/', methods=['GET'])
-@head_company_required()
+@head_company_or_office_required()
 def read():
     if request.method == 'GET':
         results = user_read()
@@ -29,7 +31,7 @@ def read():
 
 
 @auth_blueprint.route('/read/<int:pk>/', methods=['GET'])
-@head_company_required()
+@head_company_or_office_required()
 def read_one(pk):
     if request.method == 'GET':
         results = user_read_by_pk(pk)
@@ -38,8 +40,19 @@ def read_one(pk):
         return abort(500)
 
 
+@auth_blueprint.route('/read/me/', methods=['GET'])
+@jwt_required()
+def read_me():
+    if request.method == 'GET':
+        user = User.query.filter_by(id=get_jwt_identity()).first()
+        results = user_read_by_pk(pk=user.id)
+        return jsonify({"user": results})
+    else:
+        return abort(500)
+
+
 @auth_blueprint.route('/update/<int:pk>/', methods=['GET', 'PUT'])
-@head_company_required()
+@head_company_or_office_required()
 def update(pk):
     if request.method == 'GET':
         results = user_read_by_pk(pk)
@@ -52,7 +65,7 @@ def update(pk):
 
 
 @auth_blueprint.route('/delete/<int:pk>', methods=['GET', 'DELETE'])
-@head_company_required()
+@head_company_or_office_required()
 def delete(pk):
     if request.method == 'GET':
         results = user_read_by_pk(pk)
@@ -72,7 +85,6 @@ def login_user():
             user = User.query.filter_by(email=data.get('email')).first()
             if user and bcrypt.check_password_hash(
                     user.password, data.get('password')):
-                # session['email'] = auth.email
                 auth_token = user.encode_auth_token(user.id)
                 if auth_token:
                     return jsonify({"auth_token": auth_token}), 200

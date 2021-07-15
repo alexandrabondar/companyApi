@@ -56,5 +56,3 @@ def delete(pk):
         return jsonify({"message": "role deleted successfully"}), 200
     else:
         return abort(500)
-
-

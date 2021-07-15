@@ -1,5 +1,5 @@
 from flask import jsonify, request
-from app import db, bcrypt
+from app import db
 from app.models import User
 
 
@@ -75,21 +75,3 @@ def user_delete_by_pk(pk):
     user = User.query.get_or_404(pk)
     db.session.delete(user)
     db.session.commit()
-
-
-# def user_login(data):
-#     try:
-#         user = User.query.filter_by(email=data.get('email')).first()
-#         if user and bcrypt.check_password_hash(
-#                 user.password, data.get('password')):
-#             # session['email'] = auth.email
-#             auth_token = user.encode_auth_token(user.id)
-#             if auth_token:
-#                 return jsonify({"auth_token": auth_token}), 200
-#             else:
-#                 return jsonify({'message': 'auth_token not created'}), 400
-#         else:
-#             return jsonify({'message': 'user does not exist'}), 400
-#     except Exception as e:
-#         print(e)
-#         return jsonify({'message': 'invalid data'}), 500

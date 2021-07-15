@@ -1,0 +1,38 @@
+[
+    {
+        "id": 2,
+        "first_name_user": "Ivan",
+        "last_name_user": "Ivanov",
+        "salary_user": 2000.0
+    },
+    {
+        "id": 4,
+        "first_name_user": "Sidr",
+        "last_name_user": "Sidorov",
+        "salary_user": 2000.0
+    },
+    {
+        "id": 5,
+        "first_name_user": "Sidr",
+        "last_name_user": "Sidorov",
+        "salary_user": 2000.0
+    },
+    {
+        "id": 6,
+        "first_name_user": "Sidr",
+        "last_name_user": "Sidorov",
+        "salary_user": 2000.0
+    },
+    {
+        "id": 7,
+        "first_name_user": "Sidr",
+        "last_name_user": "Sidorov",
+        "salary_user": 2000.0
+    },
+    {
+        "id": 8,
+        "first_name_user": "Sidr",
+        "last_name_user": "Sidorov",
+        "salary_user": 2000.0
+    }
+]

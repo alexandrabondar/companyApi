@@ -1,10 +1,12 @@
 from flask import Blueprint, abort, jsonify
 from .apiview import *
+from ..permissions import head_company_required
 
 office_blueprint = Blueprint('office', __name__)
 
 
 @office_blueprint.route('/create/', methods=['POST'])
+@head_company_required()
 def create():
     if request.method == 'POST':
         if request.is_json:
@@ -17,6 +19,7 @@ def create():
 
 
 @office_blueprint.route('/read/', methods=['GET'])
+@head_company_required()
 def read():
     if request.method == 'GET':
         results = office_read()
@@ -26,6 +29,7 @@ def read():
 
 
 @office_blueprint.route('/read/<int:pk>/', methods=['GET'])
+@head_company_required()
 def read_one(pk):
     if request.method == 'GET':
         results = office_read_by_pk(pk)
@@ -35,6 +39,7 @@ def read_one(pk):
 
 
 @office_blueprint.route('/update/<int:pk>/', methods=['GET', 'PUT'])
+@head_company_required()
 def update(pk):
     if request.method == 'GET':
         results = office_read_by_pk(pk)
@@ -47,6 +52,7 @@ def update(pk):
 
 
 @office_blueprint.route('/delete/<int:pk>/', methods=['GET', 'DELETE'])
+@head_company_required()
 def delete(pk):
     if request.method == 'GET':
         results = office_read_by_pk(pk)

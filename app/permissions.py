@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import jsonify
-from flask_jwt_extended import verify_jwt_in_request, jwt_required, current_user
+from flask_jwt_extended import verify_jwt_in_request, current_user
 from .models import User
 from app import jwt
 
@@ -29,7 +29,7 @@ def head_office_required():
     return wrapper
 
 
-def head_company_required(role):
+def head_company_required():
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args, **kwargs):
@@ -42,14 +42,15 @@ def head_company_required(role):
     return wrapper
 
 
-def staff_required():
+def head_company_or_office_required():
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args, **kwargs):
             verify_jwt_in_request()
-            if current_user.role_id == 1:
+            role = current_user.role_id
+            if role == 3 or role == 2:
                 return fn(*args, **kwargs)
             else:
-                return jsonify(msg="Staff only!"), 403
+                return jsonify(msg="Head of company or head of office only!"), 403
         return decorator
     return wrapper
