@@ -1,26 +1,27 @@
 from flask import abort, Blueprint
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from .apiview import *
-from .. import bcrypt
-from ..permissions import head_company_or_office_required
+from app import bcrypt
+from app.permissions.permissions import head_company_or_office_required
 
-auth_blueprint = Blueprint('auth', __name__)
+user_blueprint = Blueprint('user', __name__)
 
 
-@auth_blueprint.route('/create/', methods=['POST'])
+@user_blueprint.route('/create/', methods=['POST'])
 @head_company_or_office_required()
 def create():
     if request.method == 'POST':
         if request.is_json:
             data = request.get_json()
-            user_create(data)
+            result = user_create(data)
+            return result
         else:
             return {"error": "The request payload is not in JSON format"}
     else:
         return abort(500)
 
 
-@auth_blueprint.route('/read/', methods=['GET'])
+@user_blueprint.route('/read/', methods=['GET'])
 @head_company_or_office_required()
 def read():
     if request.method == 'GET':
@@ -30,7 +31,7 @@ def read():
         return abort(500)
 
 
-@auth_blueprint.route('/read/<int:pk>/', methods=['GET'])
+@user_blueprint.route('/read/<int:pk>/', methods=['GET'])
 @head_company_or_office_required()
 def read_one(pk):
     if request.method == 'GET':
@@ -40,7 +41,7 @@ def read_one(pk):
         return abort(500)
 
 
-@auth_blueprint.route('/read/me/', methods=['GET'])
+@user_blueprint.route('/read/me/', methods=['GET'])
 @jwt_required()
 def read_me():
     if request.method == 'GET':
@@ -51,7 +52,7 @@ def read_me():
         return abort(500)
 
 
-@auth_blueprint.route('/update/<int:pk>/', methods=['GET', 'PUT'])
+@user_blueprint.route('/update/<int:pk>/', methods=['GET', 'PUT'])
 @head_company_or_office_required()
 def update(pk):
     if request.method == 'GET':
@@ -64,7 +65,7 @@ def update(pk):
         return abort(500)
 
 
-@auth_blueprint.route('/delete/<int:pk>', methods=['GET', 'DELETE'])
+@user_blueprint.route('/delete/<int:pk>', methods=['GET', 'DELETE'])
 @head_company_or_office_required()
 def delete(pk):
     if request.method == 'GET':
@@ -77,7 +78,7 @@ def delete(pk):
         return abort(500)
 
 
-@auth_blueprint.route('/login/', methods=['GET'])
+@user_blueprint.route('/login/', methods=['GET'])
 def login_user():
     data = request.get_json()
     if request.method == 'GET':

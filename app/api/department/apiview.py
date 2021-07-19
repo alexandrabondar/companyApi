@@ -1,6 +1,6 @@
 from flask import request
 from app import db
-from app.models import Department
+from app.models.models import Department
 
 
 def department_create():

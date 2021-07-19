@@ -1,6 +1,6 @@
 from flask import request
 from app import db
-from app.models import Role
+from app.models.models import Role
 
 
 def role_create():

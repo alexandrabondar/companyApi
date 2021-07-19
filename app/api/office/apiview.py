@@ -1,6 +1,6 @@
 from flask import request
 from app import db
-from app.models import Office
+from app.models.models import Office
 
 
 def office_create():

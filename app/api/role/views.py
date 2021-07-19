@@ -1,10 +1,12 @@
 from flask import jsonify, Blueprint, abort
 from .apiview import *
+from app.permissions.permissions import head_company_required
 
 role_blueprint = Blueprint('role', __name__)
 
 
 @role_blueprint.route('/create/', methods=['POST'])
+@head_company_required()
 def create():
     if request.method == 'POST':
         if request.is_json:
@@ -17,6 +19,7 @@ def create():
 
 
 @role_blueprint.route('/read/', methods=['GET'])
+@head_company_required()
 def read():
     if request.method == 'GET':
         results = role_read()
@@ -26,6 +29,7 @@ def read():
 
 
 @role_blueprint.route('/read/<int:pk>/', methods=['GET'])
+@head_company_required()
 def read_one(pk):
     if request.method == 'GET':
         results = role_read_by_pk(pk)
@@ -35,6 +39,7 @@ def read_one(pk):
 
 
 @role_blueprint.route('/update/<int:pk>/', methods=['GET', 'PUT'])
+@head_company_required()
 def update(pk):
     if request.method == 'GET':
         results = role_read_by_pk(pk)
@@ -47,6 +52,7 @@ def update(pk):
 
 
 @role_blueprint.route('/delete/<int:pk>/', methods=['GET', 'DELETE'])
+@head_company_required()
 def delete(pk):
     if request.method == 'GET':
         results = role_read_by_pk(pk)

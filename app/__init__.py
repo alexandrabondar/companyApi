@@ -18,12 +18,12 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 
-from app.auth.views import auth_blueprint
-from app.office.views import office_blueprint
-from app.department.views import department_blueprint
-from app.role.views import role_blueprint
+from app.api.user.views import user_blueprint
+from app.api.office.views import office_blueprint
+from app.api.department.views import department_blueprint
+from app.api.role.views import role_blueprint
 from .filter_users.views import filter_blueprint
-app.register_blueprint(auth_blueprint, url_prefix='/auth')
+app.register_blueprint(user_blueprint, url_prefix='/user')
 app.register_blueprint(office_blueprint, url_prefix='/office')
 app.register_blueprint(department_blueprint, url_prefix='/department')
 app.register_blueprint(role_blueprint, url_prefix='/role')

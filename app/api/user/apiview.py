@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from app import db
-from app.models import User
+from app.models.models import User
 
 
 def user_create(data):
@@ -13,6 +13,7 @@ def user_create(data):
                         role_id=data['role_id'])
             db.session.add(user)
             db.session.commit()
+
             auth_token = user.encode_auth_token(user.id)
             return jsonify({"auth_token": auth_token}), 201
         except Exception as e:
@@ -48,7 +49,8 @@ def user_read_by_pk(pk):
             "last_name_user": user.last_name_user,
             "salary_user": user.salary_user,
             "created_at": user.created_at,
-            "role_id": user.role_id
+            "role_id": user.role_id,
+            "department_id": user.department_id
         }
     ]
     return results
@@ -57,12 +59,21 @@ def user_read_by_pk(pk):
 def user_update_by_pk(pk):
     user = User.query.get_or_404(pk)
     data = request.get_json()
-    user.email = data['email']
-    user.first_name_user = data['first_name_user']
-    user.last_name_user = data['last_name_user']
-    user.department_id = data['department_id']
-    user.role_id = data['role_id']
-    user.salary_user = data['salary_user']
+    for key, value in data.items():
+        if key == 'email':
+            user.email = data['email']
+        elif key == 'first_name_user':
+            user.first_name_user = data['first_name_user']
+        elif key == 'last_name_user':
+            user.last_name_user = data['last_name_user']
+        elif key == 'department_id':
+            user.department_id = data['department_id']
+        elif key == 'role_id':
+            user.role_id = data['role_id']
+        elif key == 'salary_user':
+            user.salary_user = data['salary_user']
+        else:
+            continue
     try:
         db.session.add(user)
         db.session.commit()
