@@ -16,4 +16,5 @@ class DevelopmentConfig(BaseConfig):
 
 class TestingConfig(BaseConfig):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('postgresql://root:root@localhost:5432/company_test')
+    SQLALCHEMY_DATABASE_URI = 'postgresql://root:root@localhost:5432/company_test'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False

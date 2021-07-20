@@ -1,6 +1,6 @@
 from flask import Blueprint, abort, jsonify
 from .apiview import *
-from app.permissions.permissions import head_company_or_office_required
+from app.permissions.permissions import head_company_or_office_required, head_company_required
 
 department_blueprint = Blueprint('department', __name__)
 

@@ -1,4 +1,4 @@
-from flask import abort, Blueprint
+from flask import abort, Blueprint, session
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from .apiview import *
 from app import bcrypt
@@ -78,10 +78,10 @@ def delete(pk):
         return abort(500)
 
 
-@user_blueprint.route('/login/', methods=['GET'])
+@user_blueprint.route('/login/', methods=['POST'])
 def login_user():
     data = request.get_json()
-    if request.method == 'GET':
+    if request.method == 'POST':
         try:
             user = User.query.filter_by(email=data.get('email')).first()
             if user and bcrypt.check_password_hash(
@@ -98,3 +98,10 @@ def login_user():
             return jsonify({'message': 'invalid data'}), 500
     else:
         abort(500)
+
+
+@user_blueprint.route('/logout/', methods=['POST'])
+def logout():
+    if 'email' in session:
+        session.pop('email', None)
+    return jsonify({'message': 'You successfully logged out'})
