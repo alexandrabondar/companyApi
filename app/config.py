@@ -10,7 +10,8 @@ class BaseConfig:
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://root:root@localhost:5432/test_test_db'
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "postgresql://")
+    # SQLALCHEMY_DATABASE_URI = 'postgresql://root:root@localhost:5432/test_test_db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 

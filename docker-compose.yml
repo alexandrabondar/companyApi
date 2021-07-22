@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  postgres:
+    restart: always
+    image: postgres:10
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=docker_db
+    volumes:
+      - ./postgres-data/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  app:
+    restart: always
+    build: .
+    command: python manage.py run -h 0.0.0.0
+    volumes:
+      - .:/flask_app
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./.env
+    depends_on:
+      - postgres

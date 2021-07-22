@@ -14,8 +14,8 @@ itsdangerous==2.0.1
 Jinja2==3.0.1
 Mako==1.1.4
 MarkupSafe==2.0.1
+marshmallow==3.12.2
 packaging==21.0
-pkg-resources==0.0.0
 pluggy==0.13.1
 psycopg2-binary==2.9.1
 py==1.10.0

@@ -1,3 +1,8 @@
+## DOCKER
+- docker-compose build
+- docker-compose up -d
+- docker-compose exec app python manage.py create_db
+
 ## USER
 
 1. Create User **POST**
