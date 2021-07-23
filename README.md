@@ -2,6 +2,7 @@
 - docker-compose build
 - docker-compose up -d
 - docker-compose exec app python manage.py create_db
+- docker-compose exec app python manage.py create_super_user
 
 ## USER
 
