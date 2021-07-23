@@ -4,6 +4,14 @@
 - docker-compose exec app python manage.py create_db
 - docker-compose exec app python manage.py create_superuser
 
+- Login as superuser: /user/login/ **POST**
+```
+{
+	"email": "super_admin@gmail.com",
+	"password": "12345",
+}
+```
+
 ## USER
 
 1. Create User **POST**
