@@ -6,12 +6,15 @@ department_blueprint = Blueprint('department', __name__)
 
 
 @department_blueprint.route('/create/', methods=['POST'])
-@head_company_or_office_required()
+# @head_company_or_office_required()
 def create():
     if request.method == 'POST':
         if request.is_json:
-            department_create()
-            return f'Department has been created successfully'
+            data = department_create()
+            if data["status"] == "success":
+                return jsonify({"message": data}), 200
+            else:
+                return jsonify({"message": data}), 500
         else:
             return jsonify({"error": "The request payload is not in JSON format"})
     else:
@@ -39,14 +42,17 @@ def read_one(pk):
 
 
 @department_blueprint.route('/update/<int:pk>/', methods=['GET', 'PUT'])
-@head_company_or_office_required()
+# @head_company_or_office_required()
 def update(pk):
     if request.method == 'GET':
         results = department_read_by_pk(pk)
         return jsonify({"department": results}), 200
     elif request.method == 'PUT':
-        department_update_by_pk(pk)
-        return jsonify({"message": "department updated successfully"}), 200
+        data = department_update_by_pk(pk)
+        if data["status"] == "success":
+            return jsonify({"message": data}), 200
+        else:
+            return jsonify({"message": data}), 500
     else:
         return abort(500)
 

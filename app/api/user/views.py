@@ -2,7 +2,7 @@ from flask import abort, Blueprint, session
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from .apiview import *
 from app import bcrypt
-from app.permissions.permissions import head_company_or_office_required
+from app.permissions.permissions import head_company_or_office_required, head_company_required
 
 user_blueprint = Blueprint('user', __name__)
 
@@ -22,7 +22,7 @@ def create():
 
 
 @user_blueprint.route('/read/', methods=['GET'])
-@head_company_or_office_required()
+# @head_company_or_office_required()
 def read():
     if request.method == 'GET':
         results = user_read()
@@ -105,3 +105,32 @@ def logout():
     if 'email' in session:
         session.pop('email', None)
     return jsonify({'message': 'You successfully logged out'})
+
+
+@head_company_required()
+@user_blueprint.route('/filter/', methods=['GET'])
+def filter_by_params():
+    filters = []
+    data = request.get_json()
+    for key, value in data.items():
+        if key == "office_id":
+            filters.append(getattr(Department, key) == value)
+        elif key == "department_id":
+            filters.append(getattr(User, key) == value)
+        elif key == "salary_user":
+            filters.append(getattr(User, key) == value)
+        elif key == "role_id":
+            filters.append(getattr(User, key) == value)
+
+    filtered_users = main_filter(*filters)
+    results = [{
+        "id": filtered_user[0].id,
+        "first_name_user": filtered_user[0].first_name_user,
+        "last_name_user": filtered_user[0].last_name_user,
+        "role_id": filtered_user[0].role_id,
+        "salary_user": filtered_user[0].salary_user,
+        "department_id": filtered_user[0].department_id,
+        "office_id": filtered_user[1].office_id
+    } for filtered_user in filtered_users]
+    json_dump(results)
+    return jsonify({"result": results})

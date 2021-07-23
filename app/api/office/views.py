@@ -10,8 +10,11 @@ office_blueprint = Blueprint('office', __name__)
 def create():
     if request.method == 'POST':
         if request.is_json:
-            office_create()
-            return jsonify({"message": "Office has been created successfully"}), 200
+            data = office_create()
+            if data["status"] == "success":
+                return jsonify({"message": data}), 200
+            else:
+                return jsonify({"message": data}), 500
         else:
             return {"error": "The request payload is not in JSON format"}
     else:
@@ -45,8 +48,11 @@ def update(pk):
         results = office_read_by_pk(pk)
         return jsonify({"office": results}), 200
     elif request.method == 'PUT':
-        office_update_by_pk(pk)
-        return jsonify({"message": "office updated successfully"}), 200
+        data = office_update_by_pk(pk)
+        if data["status"] == "success":
+            return jsonify({"message": data}), 200
+        else:
+            return jsonify({"message": data}), 500
     else:
         return abort(500)
 
@@ -63,6 +69,18 @@ def delete(pk):
     else:
         return abort(500)
 
+
+@office_blueprint.route('/filter/<int:pk>/', methods=['GET'])
+@head_company_required()
+def filter_sum_salary_by_office(pk):
+    filter_data = filter_sum_salary_office(pk)
+    salary, office_id = filter_data[0]
+    results = [
+        {
+            "sum_salary": salary,
+            "office_id": office_id,
+         }]
+    return jsonify({"result": results})
 
 
 

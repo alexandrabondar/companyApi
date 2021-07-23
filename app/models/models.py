@@ -1,6 +1,7 @@
 import datetime
 from app import app, db, bcrypt
 import jwt
+from marshmallow import Schema, fields, validate
 
 
 class Office(db.Model):
@@ -20,6 +21,11 @@ class Office(db.Model):
         return self.name
 
 
+class OfficeSchema(Schema):
+    name = fields.Str(validate=validate.Length(min=1, max=120), required=True)
+    address = fields.Str(validate=validate.Length(min=1, max=160), required=True)
+
+
 class Department(db.Model):
 
     __tablename__ = 'departments'
@@ -35,6 +41,11 @@ class Department(db.Model):
 
     def __str__(self):
         return self.name
+
+
+class DepartmentSchema(Schema):
+    name = fields.Str(validate=validate.Length(min=1, max=120), required=True)
+    office_id = fields.Int(required=True)
 
 
 class User(db.Model):
@@ -65,7 +76,7 @@ class User(db.Model):
     def encode_auth_token(self, user_id):
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=60),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=180),
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
@@ -76,6 +87,16 @@ class User(db.Model):
             )
         except Exception as e:
             return e
+
+
+class UserSchema(Schema):
+    email = fields.Email()
+    password = fields.Str(validate=validate.Length(min=1, max=120), required=True)
+    first_name_user = fields.Str(validate=validate.Length(min=1, max=80), required=True)
+    last_name_user = fields.Str(validate=validate.Length(min=1, max=80), required=True)
+    salary_user = fields.Float(required=True)
+    department_id = fields.Int(required=True)
+    role_id = fields.Int(required=True)
 
 
 class Role(db.Model):
@@ -91,3 +112,7 @@ class Role(db.Model):
 
     def __str__(self):
         return self.name_role
+
+
+class RoleSchema(Schema):
+    name_role = fields.Str(validate=validate.Length(min=1, max=120), required=True)

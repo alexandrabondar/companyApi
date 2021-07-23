@@ -6,12 +6,15 @@ role_blueprint = Blueprint('role', __name__)
 
 
 @role_blueprint.route('/create/', methods=['POST'])
-@head_company_required()
+# @head_company_required()
 def create():
     if request.method == 'POST':
         if request.is_json:
-            role_create()
-            return jsonify({"message": "Role has been created successfully"})
+            data = role_create()
+            if data["status"] == "success":
+                return jsonify({"message": data}), 200
+            else:
+                return jsonify({"message": data}), 500
         else:
             return {"error": "The request payload is not in JSON format"}
     else:
@@ -19,7 +22,7 @@ def create():
 
 
 @role_blueprint.route('/read/', methods=['GET'])
-@head_company_required()
+# @head_company_required()
 def read():
     if request.method == 'GET':
         results = role_read()
@@ -39,14 +42,17 @@ def read_one(pk):
 
 
 @role_blueprint.route('/update/<int:pk>/', methods=['GET', 'PUT'])
-@head_company_required()
+# @head_company_required()
 def update(pk):
     if request.method == 'GET':
         results = role_read_by_pk(pk)
         return jsonify({"role": results}), 200
     elif request.method == 'PUT':
-        role_update_by_pk(pk)
-        return jsonify({"message": "role updated successfully"}), 200
+        data = role_update_by_pk(pk)
+        if data["status"] == "success":
+            return jsonify({"message": data}), 200
+        else:
+            return jsonify({"message": data}), 500
     else:
         return abort(500)
 

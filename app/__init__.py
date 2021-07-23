@@ -22,9 +22,7 @@ from app.api.user.views import user_blueprint
 from app.api.office.views import office_blueprint
 from app.api.department.views import department_blueprint
 from app.api.role.views import role_blueprint
-from .filter_users.views import filter_blueprint
 app.register_blueprint(user_blueprint, url_prefix='/user')
 app.register_blueprint(office_blueprint, url_prefix='/office')
 app.register_blueprint(department_blueprint, url_prefix='/department')
 app.register_blueprint(role_blueprint, url_prefix='/role')
-app.register_blueprint(filter_blueprint, url_prefix='/filter')
